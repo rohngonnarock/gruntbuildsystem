@@ -1,20 +1,26 @@
 module.exports = function (grunt) {
-
+    require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
     grunt.initConfig({
         concat: {
             js: {
                 src: ['js/**/*.js'],
-                dest: 'build/js/scripts.js'
+                dest: 'www/js/scripts.js'
             },
             css: {
                 src: ['css/**/*.css'],
-                dest: 'build/css/styles.css'
+                dest: 'www/css/styles.css'
             }
         },
         watch: {
+            all: {
+                files: 'index.html',
+                options: {
+                    livereload: true
+                }
+            },
             js: {
                 files: ['js/**/*.js'],
-                tasks: ['concat:js','uglify']
+                tasks: ['concat:js', 'uglify']
             },
             css: {
                 files: ['css/**/*.css'],
@@ -24,16 +30,26 @@ module.exports = function (grunt) {
         uglify: {
             my_target: {
                 files: {
-                    'build/js/scripts.min.js': 'build/js/scripts.js'
+                    'www/js/scripts.min.js': 'www/js/scripts.js'
                 }
+            }
+        },
+        express: {
+            all: {
+                options: {
+                    port: 8000,
+                    hostname: "0.0.0.0",
+                    bases: ['www'],
+                    livereload: true
+                }
+            }
+        },
+        open: {
+            all: {
+                path: 'http://localhost:<%= express.all.options.port%>'
             }
         }
 
     });
-
-    grunt.loadNpmTasks('grunt-contrib-concat');
-    grunt.loadNpmTasks('grunt-contrib-watch');
-    grunt.loadNpmTasks('grunt-contrib-uglify');
-
-    grunt.registerTask('default', ['concat', 'watch','uglify']);
+    grunt.registerTask('default', ['concat', 'uglify', 'express', 'open', 'watch']);
 };

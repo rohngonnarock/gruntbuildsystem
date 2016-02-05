@@ -1,2 +1,1 @@
-var rahul = "rahul";
-var m = "test";
+console.log('Ram.js Loaded');
